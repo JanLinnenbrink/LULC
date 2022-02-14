@@ -23,28 +23,6 @@ setwd(dirname(rstudioapi::getSourceEditorContext()$path))
 preds <- stack("preds.grd")
 pr_rs <- readRDS("Trainingsdaten_Guetersloh_Jan.RDS")
 
-ffs_model <- readRDS("model.RDS")
-gt_pred <- readRDS("gt_pred")
-gt_aoa <- readRDS("gt_aoa.RDS")
-  
-luc_tab <- read_xlsx("Landnutzungsklassen.xlsx")
-
-marburg <- readRDS("marburg.RDS")
-marburg_pred <- readRDS("marburg_pred")
-marburg_aoa <- readRDS("marburg_aoa.RDS")
-
-all_dat <- readRDS("data_combined.RDS")
-
-all_model <- readRDS("all_model.RDS")
-gt_all <- readRDS("gt_all")
-marburg_all <- readRDS("marburg_all")
-
-aoa_marburg_all <- readRDS("aoa_marburg_all")
-aoa_gt_all <- readRDS("aoa_gt_all")
-predprob_all <- stack("predprob_all.grd")
-
-
-
 pred_names <- c("B02","B03","B04","B08","B05","B06","B07","B11",
                 "B12","NDVI","NDVI_5x5_sd","NDVI_3x3_sd")
 
@@ -247,8 +225,6 @@ gt_pred_f@data@attributes[[1]] <- merge(gt_pred_f@data@attributes[[1]],
   dplyr::select("ID", "Label", "Color")
 
 
-gt_pred_f <- readRDS("gt_pred_f")
-
 map_gt <- tm_shape(gt_pred_f, raster.downsample = FALSE) +
   tm_raster(palette = gt_pred_f@data@attributes[[1]]$Color,title = "LULC", 
             colorNA = "black", textNA = "high uncertainity")+
@@ -445,7 +421,6 @@ gt_all_f@data@attributes[[1]] <- merge(gt_all_f@data@attributes[[1]],
 
 saveRDS(gt_all_f, "gt_all_f")
 saveRDS(marburg_all_f, "marburg_all_f")
-gt_all_f <- readRDS("gt_all_f")
 
 gt_all_df <- rasterToPoints(gt_all) %>% as.data.frame()
 marburg_all_df <- rasterToPoints(marburg_all) %>% as.data.frame()
@@ -468,7 +443,6 @@ marburg_all_df1 <- marburg_all_df %>%
 saveRDS(gt_all_df1, "gt_all_df1")
 saveRDS(marburg_all_df1, "marburg_all_df1")
 
-gt_all_df1 <- readRDS("gt_all_df1")
 gt_all_df1$freq <- gt_all_df1$area_ha*100
 marburg_all_df1$freq <- marburg_all_df1$area_ha*100
 
@@ -559,7 +533,6 @@ tmap_save(marb_gt, "marb_gt.png", height=4, width=8)
 AOA_new <- calibrate_aoa(AOA = gt_aoa,model=ffs_model)
 exp_kappa <- AOA_new$AOA[[3]]
 saveRDS(AOA_new,"AOA_new")
-AOA_new <- readRDS("AOA_new")
 
 kappa_map <- tm_shape(exp_kappa[[1]]) +
   tm_raster(style="quantile", palette =  "-YlOrRd") + 
